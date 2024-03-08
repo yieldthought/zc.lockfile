@@ -13,7 +13,8 @@
 ##############################################################################
 import logging
 import os
-
+import time
+import pwd
 
 logger = logging.getLogger("zc.lockfile")
 
@@ -126,3 +127,37 @@ class LockFile(SimpleLockFile):
         )
         self._fp.write(" %s\n" % content)
         self._fp.truncate()
+
+
+class WaitLock(LockFile):
+
+    def __init__(self, path='/tmp/waitlock', content_template='{pid}{hostname}', interval=10):
+        self._content_template = content_template
+        last_owner = None
+        while True:
+            try:
+                super().__init__(path)
+            except LockError as e:
+                owner = get_file_owner(path)
+                if owner != last_owner:
+                    print(f'Waiting for {path}, currently in use by {owner}')
+                    last_owner = owner
+                time.sleep(interval)
+            else:
+                break
+                
+    def _on_lock(self):
+        content = self._content_template.format(
+            pid=os.getpid(),
+            hostname=LazyHostName(),
+        )
+        self._fp.write(" %s\n" % content)
+        self._fp.truncate()
+
+def get_file_owner(filepath):
+    """Get the username of a file's owner."""
+    stat_info = os.stat(filepath)
+    uid = stat_info.st_uid
+    user_name = pwd.getpwuid(uid).pw_name
+    
+    return user_name
