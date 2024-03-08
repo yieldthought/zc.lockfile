@@ -11,4 +11,12 @@ storage implementation uses file locks to mediate access to
 file-storage database files.  The database files and lock file files
 are separate files.
 
+This version edited by yieldthought to add a simple WaitLock class.
+
+Installation:
+
+```
+pip install git+https://github.com/yieldthought/zc.lockfile.git
+```
+
 .. contents::
