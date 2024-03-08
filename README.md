@@ -1,6 +1,4 @@
-*************************
-Basic inter-process locks
-*************************
+# Basic inter-process locks
 
 The zc.lockfile package provides a basic portable implementation of
 interprocess locks using lock files.  The purpose if not specifically
@@ -13,7 +11,7 @@ are separate files.
 
 This version edited by yieldthought to add a simple WaitLock class.
 
-Installation:
+## Installation:
 
 ```
 pip install git+https://github.com/yieldthought/zc.lockfile.git
